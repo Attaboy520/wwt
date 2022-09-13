@@ -19,7 +19,9 @@
 #define MF 0x10 // 16 浮点错误，浮点或WAIT/FWAIT指令触发
 #define AC 0x11 // 17 对齐检查，对内存中数据的引用触发
 #define MC 0x12 // 18 机器检查，错误代码和来源与型号有关触发
-#define XF 0x13 // 19 SIMD浮点异常，SIMD浮点指令付出
+#define XM 0x13 // 19 SIMD浮点异常，SIMD浮点指令付出
+#define VE 0x14 // 20 virtualization exception. EPT violations
+#define CP 0x15 // 21 control protection exception.
 /***************** 主片 ********************/
 #define IRQ0 0x20 // 时钟中断 Programmable Interrupt Timer Interrupt
 #define IRQ1 0x21 // 键盘中断 Keyboard Interrupt
@@ -95,22 +97,22 @@ void initializePIC(uint8_t offset1, uint8_t offset2);
 struct InterruptFrame;
 __attribute__((interrupt)) void divideZeroHandler(struct InterruptFrame* frame);
 __attribute__((interrupt)) void debugHandler(struct InterruptFrame* frame);
-__attribute__((interrupt)) void NMIHandler(struct InterruptFrame* frame);
+__attribute__((interrupt)) void nonMaskableHandler(struct InterruptFrame* frame);
 __attribute__((interrupt)) void breakpointHandler(struct InterruptFrame* frame);
 __attribute__((interrupt)) void overflowHandler(struct InterruptFrame* frame);
 __attribute__((interrupt)) void boundRangeHandler(struct InterruptFrame* frame);
 __attribute__((interrupt)) void undefinedHandler(struct InterruptFrame* frame);
-__attribute__((interrupt)) void NMHandler(struct InterruptFrame* frame);
+__attribute__((interrupt)) void noMathHandler(struct InterruptFrame* frame);
 __attribute__((interrupt)) void doubleFaultHandler(struct InterruptFrame* frame);
 __attribute__((interrupt)) void tssHandler(struct InterruptFrame* frame);
-__attribute__((interrupt)) void NPHandler(struct InterruptFrame* frame);
+__attribute__((interrupt)) void segmentNotPresentHandler(struct InterruptFrame* frame);
 __attribute__((interrupt)) void stackSegmentHandler(struct InterruptFrame* frame);
 __attribute__((interrupt)) void generalPageHandler(struct InterruptFrame* frame);
 __attribute__((interrupt)) void pageFaultHandler(struct InterruptFrame* frame);
-__attribute__((interrupt)) void MFHandler(struct InterruptFrame* frame);
+__attribute__((interrupt)) void mathFalutHandler(struct InterruptFrame* frame);
 __attribute__((interrupt)) void alignmentCheckHandler(struct InterruptFrame* frame);
 __attribute__((interrupt)) void machineCheckHandler(struct InterruptFrame* frame);
-__attribute__((interrupt)) void XFHandler(struct InterruptFrame* frame);
+__attribute__((interrupt)) void simdFloatingPointHandler(struct InterruptFrame* frame);
 
 __attribute__((interrupt)) void timerHandler(struct InterruptFrame* frame);
 __attribute__((interrupt)) void keyboardHandler(struct InterruptFrame* frame);

@@ -26,22 +26,22 @@ void initializeInterrupts(void) {
 
     setIRQ(DE, (void*)divideZeroHandler, TRAP_GATE, 0x08);
     setIRQ(DB, (void*)debugHandler, TRAP_GATE, 0x08);
-    setIRQ(NMI, (void*)NMIHandler, TRAP_GATE, 0x08);
+    setIRQ(NMI, (void*)nonMaskableHandler, TRAP_GATE, 0x08);
     setIRQ(BP, (void*)breakpointHandler, TRAP_GATE, 0x08);
     setIRQ(OF, (void*)overflowHandler, TRAP_GATE, 0x08);
     setIRQ(BR, (void*)boundRangeHandler, TRAP_GATE, 0x08);
     setIRQ(UD, (void*)undefinedHandler, TRAP_GATE, 0x08);
-    setIRQ(NM, (void*)NMHandler, TRAP_GATE, 0x08);
+    setIRQ(NM, (void*)noMathHandler, TRAP_GATE, 0x08);
     setIRQ(DF, (void*)doubleFaultHandler, TRAP_GATE, 0x08);
     setIRQ(TS, (void*)tssHandler, TRAP_GATE, 0x08);
-    setIRQ(NP, (void*)NPHandler, TRAP_GATE, 0x08);
+    setIRQ(NP, (void*)segmentNotPresentHandler, TRAP_GATE, 0x08);
     setIRQ(SS, (void*)stackSegmentHandler, TRAP_GATE, 0x08);
     setIRQ(GP, (void*)generalPageHandler, TRAP_GATE, 0x08);
     setIRQ(PF, (void*)pageFaultHandler, TRAP_GATE, 0x08);
-    setIRQ(MF, (void*)MFHandler, TRAP_GATE, 0x08);
+    setIRQ(MF, (void*)mathFalutHandler, TRAP_GATE, 0x08);
     setIRQ(AC, (void*)alignmentCheckHandler, TRAP_GATE, 0x08);
     setIRQ(MC, (void*)machineCheckHandler, TRAP_GATE, 0x08);
-    setIRQ(XF, (void*)XFHandler, TRAP_GATE, 0x08);
+    setIRQ(XM, (void*)simdFloatingPointHandler, TRAP_GATE, 0x08);
 
     setIRQ(IRQ0, (void*)timerHandler, INTERRUPT_GATE, 0x08);
     setIRQ(IRQ1, (void*)keyboardHandler, INTERRUPT_GATE, 0x08);
@@ -99,7 +99,7 @@ __attribute__((interrupt)) void debugHandler(struct InterruptFrame* frame) {
     while(1);
 }
 
-__attribute__((interrupt)) void NMIHandler(struct InterruptFrame* frame) {
+__attribute__((interrupt)) void nonMaskableHandler(struct InterruptFrame* frame) {
     debugPrint("NMI");
     while(1);
 }
@@ -124,7 +124,7 @@ __attribute__((interrupt)) void undefinedHandler(struct InterruptFrame* frame) {
     while(1);
 }
 
-__attribute__((interrupt)) void NMHandler(struct InterruptFrame* frame) {
+__attribute__((interrupt)) void noMathHandler(struct InterruptFrame* frame) {
     debugPrint("NM");
     while(1);
 }
@@ -139,7 +139,7 @@ __attribute__((interrupt)) void tssHandler(struct InterruptFrame* frame) {
     while(1);
 }
 
-__attribute__((interrupt)) void NPHandler(struct InterruptFrame* frame) {
+__attribute__((interrupt)) void segmentNotPresentHandler(struct InterruptFrame* frame) {
     debugPrint("NP");
     while(1);
 }
@@ -159,7 +159,7 @@ __attribute__((interrupt)) void pageFaultHandler(struct InterruptFrame* frame) {
     while(1);
 }
 
-__attribute__((interrupt)) void MFHandler(struct InterruptFrame* frame) {
+__attribute__((interrupt)) void mathFalutHandler(struct InterruptFrame* frame) {
     debugPrint("MF");
     while(1);
 }
@@ -174,7 +174,7 @@ __attribute__((interrupt)) void machineCheckHandler(struct InterruptFrame* frame
     while(1);
 }
 
-__attribute__((interrupt)) void XFHandler(struct InterruptFrame* frame) {
+__attribute__((interrupt)) void simdFloatingPointHandler(struct InterruptFrame* frame) {
     debugPrint("XF");
     while(1);
 }
