@@ -68,7 +68,8 @@ static uint64_t gdt[MAX_GDT] = {
 static struct gdtr_t gdtr = { sizeof(gdt), (uint64_t)gdt };
 static struct tss_t tss;
 
-void _x86_64_asm_lgdt(void* gdtr);
+void _x86_64_asm_lgdt(struct gdtr_t *gdtr, uint64_t cs_idx, uint64_t ds_idx);
+void _x86_64_asm_ltr(uint64_t tss_idx);
 void initializeGDT(void) {
   struct sys_segment_descriptor *sd = (struct sys_segment_descriptor*)&gdt[6]; // 7th&8th entry in GDT
   sd->sd_lolimit = sizeof(struct tss_t) - 1;
@@ -80,7 +81,8 @@ void initializeGDT(void) {
   sd->sd_gran = 0;
   sd->sd_hibase = ((uint64_t)&tss) >> 24;
 
-  _x86_64_asm_lgdt((void*)&gdtr);
+  _x86_64_asm_lgdt(&gdtr, 8, 16);
+  _x86_64_asm_ltr(0x30);
 }
 
 void setTssRsp(void *rsp) {

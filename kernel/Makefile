@@ -10,6 +10,8 @@ LDS = kernel.ld
 SRC_DIR := src
 RENDER_DIR := ${SRC_DIR}/render
 INCLUDE_DIR :=  include
+BUILD_DIR := ../build/kernel
+OBJ_DIR  := ${BUILD_DIR}/src
 
 INCLUDE_DIRS := ${INCLUDE_DIR}
 INCLUDE_FLAG := ${foreach d, ${INCLUDE_DIRS}, -I$d}
@@ -51,10 +53,7 @@ C_SOURCES  := \
 	${SRC_DIR}/gdt.c \
 	${SRC_DIR}/interrupts.c
 
-OBJECTS    := ${AS_SOURCES:.S=.o}
-OBJECTS    += ${C_SOURCES:.c=.o}
 
-BUILD_DIR  := build
 BINARY     := ${BUILD_DIR}/kernel.elf
 
 
@@ -62,21 +61,17 @@ BINARY     := ${BUILD_DIR}/kernel.elf
 
 all: ${BINARY}
 
-${BINARY}: ${BUILD_DIR} ${OBJECTS}
+${BINARY}: ${OBJ_DIR} ${OBJECTS}
 	${CC} -T ${LDS} -g3 -o ${BINARY} ${LDFLAGS} ${OBJECTS} ${LIBS}
 
-%.o: %.S
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.S
 	${CC} ${INCLUDE_FLAG} -g -c $< -o $@ ${CFLAGS}
 
-$(SRC_DIR)/interrupts.o: $(SRC_DIR)/interrupts.c
+$(OBJ_DIR)/interrupts.o: $(SRC_DIR)/interrupts.c
 	$(CC) ${INCLUDE_FLAG} -mno-red-zone -mgeneral-regs-only -ffreestanding -c $^ -o $@
 
-%.o: %.c
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	${CC} ${INCLUDE_FLAG} -g -c $< -o $@ ${CFLAGS}
 
-${BUILD_DIR}:
-	mkdir -p ${BUILD_DIR}
-
-clean:
-	rm -f ${OBJECTS}
-	rm -rf ${BUILD_DIR}
+${OBJ_DIR}:
+	mkdir -p ${OBJ_DIR}

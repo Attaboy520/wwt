@@ -27,6 +27,7 @@ void initializeInterrupts(void) {
     setIRQ(IRQ0, (void*)timerHandler, IDT_InterruptGate, 0x08);
     setIRQ(IRQ1, (void*)keyboardHandler, IDT_InterruptGate, 0x08);
     asm ("lidt %0" : : "m" (idtr));
+    asm ("sti");
     initializePIC();
 }
 
