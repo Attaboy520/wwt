@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "name": "Chinagon - debug kernel",
+            "name": "wwt - debug kernel",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/kernel/build/kernel.elf",
