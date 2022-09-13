@@ -51,32 +51,34 @@ C_SOURCES  := \
 	${SRC_DIR}/gdt.c \
 	${SRC_DIR}/interrupts.c
 
-OBJECTS    := ${AS_SOURCES:.S=.o}
-OBJECTS    += ${C_SOURCES:.c=.o}
 
-BUILD_DIR  := build
+BUILD_DIR := ../build/kernel
+OBJ_DIR  := ${BUILD_DIR}/src
 BINARY     := ${BUILD_DIR}/kernel.elf
 
+OBJECTS := $(patsubst ${SRC_DIR}/%.c,${OBJ_DIR}/%.o,${C_SOURCES})
+OBJECTS += $(patsubst ${SRC_DIR}/%.S,${OBJ_DIR}/%.o,${AS_SOURCES})
 
 .PHONY: all clean
 
 all: ${BINARY}
 
-${BINARY}: ${BUILD_DIR} ${OBJECTS}
+${BINARY}: ${OBJ_DIR} ${OBJECTS}
 	${CC} -T ${LDS} -g3 -o ${BINARY} ${LDFLAGS} ${OBJECTS} ${LIBS}
 
-%.o: %.S
-	${CC} ${INCLUDE_FLAG} -g -c $< -o $@ ${CFLAGS}
-
-$(SRC_DIR)/interrupts.o: $(SRC_DIR)/interrupts.c
+$(OBJ_DIR)/interrupts.o: $(SRC_DIR)/interrupts.c
 	$(CC) ${INCLUDE_FLAG} -mno-red-zone -mgeneral-regs-only -ffreestanding -c $^ -o $@
 
-%.o: %.c
-	${CC} ${INCLUDE_FLAG} -g -c $< -o $@ ${CFLAGS}
+${OBJ_DIR}/%.o: ${SRC_DIR}/%.c
+	${CC} ${INCLUDE_FLAG} ${CFLAGS} -o $@ -c $<
 
-${BUILD_DIR}:
-	mkdir -p ${BUILD_DIR}
+${OBJ_DIR}/%.o: ${SRC_DIR}/%.S
+	${CC} ${INCLUDE_FLAG} ${CFLAGS} -o $@ -c $<
 
+${OBJ_DIR}:
+	mkdir -p ${OBJ_DIR}
+
+com: ${OBJ_DIR} ${OBJECTS}
 clean:
 	rm -f ${OBJECTS}
-	rm -rf ${BUILD_DIR}
+	rm -rf ${OBJ_DIR}

@@ -1,18 +1,20 @@
-.PHONY: help build boot kernel qemu debug clean
+.PHONY: help build boot kernel qemu debug clean dir
 
 .POSIX:
 .DELETE_ON_ERROR:
 MAKEFLAGS += --warn-undefined-variables
 MAKEFLAGS += --no-builtin-rules
 
-KERNEL_DIR		:= kernel
-KERNEL_BINARY	:= ${KERNEL_DIR}/build/kernel.elf
+KERNEL_DIR := kernel
+KERNEL_BUILD_DIR		:= build/kernel
+KERNEL_BINARY	:= ${KERNEL_BUILD_DIR}/kernel.elf
 FONT_FILE		:= ./zap-light16.psf
 
-BOOT_DIR    := boot
-BOOT_BINARY := ${BOOT_DIR}/build/bootx64.efi
+BOOT_DIR := boot
+BOOT_BUILD_DIR    := build/boot
+BOOT_BINARY := ${BOOT_BUILD_DIR}/bootx64.efi
 
-BUILD_DIR         := img
+BUILD_DIR         := build
 DISK_IMG          := ${BUILD_DIR}/kernel.img
 DISK_IMG_SIZE     := 2880
 
@@ -52,12 +54,9 @@ debug: ${DISK_IMG}
 		-gdb tcp::1234
 
 clean:
-	@make clean -C ${BOOT_DIR}
-	@make clean -C ${KERNEL_DIR}
-	@rm -f ${DISK_IMG}
-	@rm -rf ${BUILD_DIR}
+	@rm -rf build
 
-${DISK_IMG}: ${BUILD_DIR} ${BOOT_BINARY} ${KERNEL_BINARY}
+${DISK_IMG}: dir ${BOOT_BINARY} ${KERNEL_BINARY}
 	# Create UEFI boot disk image in DOS format.
 	dd if=/dev/zero of=$@ bs=1k count=${DISK_IMG_SIZE}
 	mformat -i $@ -f ${DISK_IMG_SIZE} ::
@@ -71,8 +70,10 @@ ${DISK_IMG}: ${BUILD_DIR} ${BOOT_BINARY} ${KERNEL_BINARY}
 ${BOOT_BINARY}:
 	make -C ${BOOT_DIR}
 
-${BUILD_DIR}:
+dir:
 	mkdir -p ${BUILD_DIR}
+	mkdir -p ${KERNEL_BUILD_DIR}
+	mkdir -p ${BOOT_BUILD_DIR}
 
 ${KERNEL_BINARY}:
 	make -C ${KERNEL_DIR}
