@@ -1,0 +1,22 @@
+{
+    "files.associations": {
+        "math.h": "c",
+        "uart.h": "c",
+        "stdio.h": "c",
+        "types.h": "c",
+        "features.h": "c",
+        "stdint.h": "c",
+        "stdbool.h": "c",
+        "stddef.h": "c",
+        "boot.h": "c",
+        "graphics.h": "c",
+        "cstdint": "cpp",
+        "error.h": "c",
+        "loader.h": "c",
+        "efi.h": "c",
+        "stdarg.h": "c",
+        "pagetable.h": "c",
+        "gdt.h": "c",
+        "interrupts.h": "c"
+    }
+}

@@ -1,0 +1,55 @@
+# 前置条件
+*.d
+
+# 目标文件
+*.o
+*.ko
+*.obj
+*.elf
+
+# 链接输出
+*.ilk
+*.map
+*.exp
+
+# 预编译头文件
+*.gch
+*.pch
+
+# 库
+*.lib
+*.a
+*.la
+*.lo
+
+# 动态库 (Windows DLL)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# 执行程序
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# 调试文件
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# 内核模块编译结果
+*.mod*
+*.cmd
+*.img
+*.elf
+*.efi
+.tmp_versions/
+modules.order
+Module.symvers
+Mkfile.old
+dkms.conf
