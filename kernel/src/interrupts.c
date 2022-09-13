@@ -187,7 +187,7 @@ __attribute__((interrupt)) void timerHandler(struct InterruptFrame* frame) {
 
 __attribute__((interrupt)) void keyboardHandler(struct InterruptFrame* frame) {
     debugPrint("keyboard\n");
-    // picEnd();
+    picEnd();
 }
 
 __attribute__((interrupt)) void mouseHandler(struct InterruptFrame* frame) {
