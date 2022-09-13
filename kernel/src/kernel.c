@@ -59,8 +59,6 @@ void kernel_main(IN BootInfo* bootInfo)
 	initializePageTable(PML4);
 	for (uint64_t i = 0; i < getMemorySize(); i+=0x1000) {
 		mapMemory((void*)i, (void*)i);
-		// identity_map_4kb(i);
-		// setup_page_tables(i, i, PAGING_KERNEL_R_W_FLAGS);
 	}
 
 
@@ -74,18 +72,21 @@ void kernel_main(IN BootInfo* bootInfo)
 
 	initializeInterrupts();
 
-	// asm ("int $0x0e");
+	// asm ("int $0x21");
 	// int* test1 = 0x800000000000000;
 	// *test1 = 2;
+	int a = 2 / 0;
 
 	debugPrint("Free RAM: %d KB\n", getFreeRAM() / 1024);
 	debugPrint("Used RAM: %d KB\n", getUsedRAM() / 1024);
 	debugPrint("Reserved RAM: %d KB\n", getReservedRAM() / 1024);
 	mapMemory((void*)0x600000000, (void*)0x80000);
+	asm ("int $0x21");
 	uint64_t* test = (uint64_t*)0x600000000;
 	*test = 26;
-	debugPrint("====== %d", (uint64_t)*test);
+	debugPrint("====== %d\n", (uint64_t)*test);
 
+	asm ("int $0x21");
 	while(1) {
 		asm volatile ("hlt");
 	}

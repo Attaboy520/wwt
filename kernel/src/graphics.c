@@ -78,18 +78,19 @@ void next(void) {
 }
 
 void clear(void) {
-    // TODO: have bug
-    // uint64_t bytesPerScanline = bootVideoInfo->pixelsPerScanline * 4;
-    // uint64_t pixelPtrBase;
-    // for (uint64_t verticalScanline = 0; verticalScanline < bootVideoInfo->verticalResolution; ++verticalScanline) {
-    //     pixelPtrBase = bootVideoInfo->verticalResolution + (bytesPerScanline * verticalScanline);
-    //     for (uint64_t* pixelPtr = (uint64_t*)pixelPtrBase; pixelPtr < (uint64_t*)(pixelPtrBase + bytesPerScanline); ++pixelPtr) {
-    //         *pixelPtr = font.clearColor;
-    //     }
-    // }
+    uint64_t fbBase = (uint64_t)bootVideoInfo->frameBufferPointer;
+    uint64_t bytesPerScanline = bootVideoInfo->pixelsPerScanline * 4;
+    uint64_t fbHeight = bootVideoInfo->verticalResolution;
+    uint64_t pixel;
+    for (uint64_t VerticalScanline = 0; VerticalScanline < fbHeight; VerticalScanline ++) {
+         pixel = fbBase + (bytesPerScanline * VerticalScanline);
+        for (uint64_t* pixelPtr = (uint64_t*)pixel; pixelPtr < (uint64_t*)(pixel + bytesPerScanline); pixelPtr ++){
+            *pixelPtr = font.clearColor;
+        }
+    }
     
-    // font.cursorPosition.x = 0;
-    // font.cursorPosition.y = 0;
+    font.cursorPosition.x = 0;
+    font.cursorPosition.y = 0;
 }
 
 void debugPrint(IN char* fmt, ...)

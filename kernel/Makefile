@@ -34,7 +34,8 @@ LDFLAGS := \
 LIBS := -lgcc
 
 
-AS_SOURCES := ${SRC_DIR}/gdt_as.S
+AS_SOURCES := \
+	${SRC_DIR}/gdt.S 
 
 C_SOURCES  := \
 	${SRC_DIR}/kernel.c \
@@ -57,13 +58,13 @@ OBJ_DIR  := ${BUILD_DIR}/src
 BINARY     := ${BUILD_DIR}/kernel.elf
 
 OBJECTS := $(patsubst ${SRC_DIR}/%.c,${OBJ_DIR}/%.o,${C_SOURCES})
-OBJECTS += $(patsubst ${SRC_DIR}/%.S,${OBJ_DIR}/%.o,${AS_SOURCES})
+OBJECTS += $(patsubst ${SRC_DIR}/%.S,${BUILD_DIR}/asm/%.asm.o,${AS_SOURCES})
 
 .PHONY: all clean
 
 all: ${BINARY}
 
-${BINARY}: ${OBJ_DIR} ${OBJECTS}
+${BINARY}: dir ${OBJECTS}
 	${CC} -T ${LDS} -g3 -o ${BINARY} ${LDFLAGS} ${OBJECTS} ${LIBS}
 
 $(OBJ_DIR)/interrupts.o: $(SRC_DIR)/interrupts.c
@@ -72,11 +73,12 @@ $(OBJ_DIR)/interrupts.o: $(SRC_DIR)/interrupts.c
 ${OBJ_DIR}/%.o: ${SRC_DIR}/%.c
 	${CC} ${INCLUDE_FLAG} ${CFLAGS} -o $@ -c $<
 
-${OBJ_DIR}/%.o: ${SRC_DIR}/%.S
+${BUILD_DIR}/asm/%.asm.o: ${SRC_DIR}/%.S
 	${CC} ${INCLUDE_FLAG} ${CFLAGS} -o $@ -c $<
 
-${OBJ_DIR}:
+dir:
 	mkdir -p ${OBJ_DIR}
+	mkdir -p ${BUILD_DIR}/asm
 
 com: ${OBJ_DIR} ${OBJECTS}
 clean:
