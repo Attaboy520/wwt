@@ -6,8 +6,7 @@ MAKEFLAGS += --no-builtin-rules
 ARCH := x86_64
 CC   := ${ARCH}-elf-gcc
 
-BUILD_DIR := ../build/boot
-OBJ_DIR  := ${BUILD_DIR}/src
+BUILD_DIR  := build
 SRC_DIR    := src
 INCLUDE_DIR := include
 
@@ -62,12 +61,8 @@ C_SOURCES :=  \
 AS_SOURCES :=
 
 
-# OBJECTS := ${C_SOURCES:.c=.o}
-# OBJECTS += ${AS_SOURCES:.S=.o}
-
-OBJECTS := $(patsubst ${SRC_DIR}/%.c,${OBJ_DIR}/%.o,${C_SOURCES})
-OBJECTS += $(patsubst ${SRC_DIR}/%.S,${OBJ_DIR}/%.o,${AS_SOURCES})
-
+OBJECTS := ${C_SOURCES:.c=.o}
+OBJECTS += ${AS_SOURCES:.S=.o}
 
 # The boot is initially compiled into a shared lib in ELF format. GNU-EFI links
 # the lib in a special format as to be easily copied into a PE32+ compatible executable
@@ -92,22 +87,20 @@ ${BINARY_EFI}: ${BINARY_ELF}
 		-j .reloc               \
 		--target=efi-app-${ARCH} $^ $@
 
-${BINARY_ELF}: ${OBJ_DIR} ${OBJECTS}
+${BINARY_ELF}: ${OBJECTS} ${BUILD_DIR}
 	ld ${LDFLAGS} ${OBJECTS} -o $@ -lefi -lgnuefi
 
-${OBJ_DIR}/%.o: ${SRC_DIR}/%.c
+%.o: %.c
 	${CC} ${CFLAGS} -o $@ -c $<
 
-${OBJ_DIR}/%.o: ${SRC_DIR}/%.S
+%.o: %.S
 	${CC} ${CFLAGS} -o $@ -c $<
-
-${OBJ_DIR}:
-	@mkdir -p ${OBJ_DIR}
 
 ${BUILD_DIR}:
-	@mkdir -p ${BUILD_DIR}
+	mkdir -p ${BUILD_DIR}
 
-test1: ${OBJ_DIR}/1.txt
-
-%.txt :
-	echo 1 >> ${OBJ_DIR}/1.txt
+clean:
+	rm -f ${OBJECTS}
+	rm -f ${BINARY_ELF}
+	rm -f ${BINARY_EFI}
+	rm -rf ${BUILD_DIR}
